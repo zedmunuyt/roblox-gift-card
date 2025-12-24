@@ -78,18 +78,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const heroSection = document.querySelector(".hero-section");
   const wallpaper = document.querySelector(".parallax-wallpaper");
 
-  if (heroSection && wallpaper) {
+  if (heroSection && wallpaper && window.innerWidth > 768) {
+    let ticking = false;
+    let mouseX = 0;
+    let mouseY = 0;
+
     document.addEventListener("mousemove", (e) => {
-      // Calculate movement relative to center of screen
-      const x = (window.innerWidth / 2 - e.pageX) / 50; // Smaller divisor = more movement
-      const y = (window.innerHeight / 2 - e.pageY) / 50;
+      mouseX = e.pageX;
+      mouseY = e.pageY;
 
-      const speed = 2; // subtle speed
-      const xOffset = x * speed;
-      const yOffset = y * speed;
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          // Calculate movement relative to center of screen
+          const x = (window.innerWidth / 2 - mouseX) / 60;
+          const y = (window.innerHeight / 2 - mouseY) / 60;
 
-      // Apply transform
-      wallpaper.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0)`;
+          const speed = 2; // subtle speed
+          const xOffset = x * speed;
+          const yOffset = y * speed;
+
+          // Apply transform
+          wallpaper.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
     });
   }
 
@@ -221,31 +234,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Update active state based on scroll position
+    let scrollTicking = false;
     const updateActiveSection = () => {
-      const sections = document.querySelectorAll("section[id]");
-      const scrollY = window.pageYOffset;
+      if (!scrollTicking) {
+        requestAnimationFrame(() => {
+          const sections = document.querySelectorAll("section[id]");
+          const scrollY = window.pageYOffset;
 
-      sections.forEach((section) => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute("id");
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop - 120;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute("id");
 
-        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-          navMenuItems.forEach((item) => {
-            item.classList.remove("active");
-            if (item.getAttribute("data-section") === sectionId) {
-              item.classList.add("active");
+            if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+              navMenuItems.forEach((item) => {
+                if (item.getAttribute("data-section") === sectionId) {
+                  if (!item.classList.contains("active")) {
+                    navMenuItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+                  }
+                }
+              });
             }
           });
-        }
-      });
 
-      // Update arrow direction on mobile
-      updateArrowDirection();
+          // Update arrow direction on mobile
+          updateArrowDirection();
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
     };
 
     // Listen to scroll events
-    window.addEventListener("scroll", updateActiveSection);
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
     // Initial check
     updateActiveSection();
 
@@ -337,8 +359,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Toggle current item
+        const willOpen = !isActive;
         item.classList.toggle("active");
-        question.setAttribute("aria-expanded", isActive ? "false" : "true");
+        question.setAttribute("aria-expanded", willOpen ? "true" : "false");
+
+        // Scroll to item if opening (especially useful on mobile)
+        if (willOpen) {
+          // Increase delay to 300ms so it calculates after the other item has mostly collapsed
+          setTimeout(() => {
+            item.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }, 300);
+        }
       });
     }
   });
