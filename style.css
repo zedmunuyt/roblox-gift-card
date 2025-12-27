@@ -84,7 +84,8 @@ a {
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 1000;
+  /* Increased from 50 to prevent cards from overlapping */
   backdrop-filter: blur(16px);
   background: linear-gradient(to right, rgba(6, 9, 25, 0.88), rgba(12, 21, 48, 0.88));
   border-bottom: 1px solid rgba(120, 133, 255, 0.25);
@@ -367,9 +368,124 @@ a {
 .hero-card {
   border-radius: 18px;
   padding: 12px 1.2rem 1.1rem;
-  background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.55), #020617 60%);
-  border: 1px solid rgba(165, 180, 252, 0.72);
+  border: 1px solid rgba(165, 180, 252, 0.4);
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card.main {
+  background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.55), #020617 60%);
+  border-color: rgba(165, 180, 252, 0.72);
+}
+
+/* Premium Styling for 800 Robux Featured Card */
+.hero-card.featured-800 {
+  background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.2), #020617 80%);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.15);
+  animation: card-appear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-card.featured-800::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(transparent,
+      rgba(99, 102, 241, 0.7),
+      rgba(34, 211, 238, 0.7),
+      rgba(168, 85, 247, 0.7),
+      transparent 60%);
+  animation: border-spin 4s linear infinite;
+  z-index: 0;
+}
+
+.hero-card.featured-800::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: radial-gradient(circle at 15% 15%, rgba(65, 84, 187, 1) 0%, rgba(30, 41, 59, 1) 35%, #020617 100%);
+  border-radius: 16px;
+  z-index: 1;
+}
+
+.hero-card.featured-800>* {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-card-body {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.8rem;
+}
+
+.hero-card-content {
+  flex: 1;
+}
+
+.hero-card-icon {
+  font-size: 4rem;
+  background: linear-gradient(135deg, #00f2ff, #7000ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.6));
+  opacity: 0.9;
+  animation: float-icon 4s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes float-icon {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+    filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+    filter: drop-shadow(0 0 25px rgba(112, 0, 255, 0.7));
+  }
+}
+
+@keyframes card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhancing Featured Item in Grid Summary */
+.hero-secondary-item.featured {
+  border-color: rgba(34, 211, 238, 0.8) !important;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.4), inset 0 0 10px rgba(34, 211, 238, 0.2) !important;
+  background: radial-gradient(circle at left, rgba(56, 189, 248, 0.3), #020617 80%) !important;
+  animation: pulse-featured 3s infinite;
+}
+
+@keyframes pulse-featured {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.6), inset 0 0 15px rgba(34, 211, 238, 0.3);
+  }
 }
 
 .hero-card.main .hero-card-header {
@@ -382,13 +498,18 @@ a {
 
 .hero-card-title {
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
+  background: linear-gradient(to right, #ffffff, #c7d2fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-card-desc {
   font-size: 0.9rem;
   color: #e5e7ff;
   margin-bottom: 0.75rem;
+  line-height: 1.5;
 }
 
 .hero-list {
@@ -402,13 +523,14 @@ a {
   display: flex;
   align-items: flex-start;
   gap: 0.45rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
   color: #e0e7ff;
 }
 
 .hero-list i {
   color: #4ade80;
-  margin-top: 0.1rem;
+  margin-top: 0.2rem;
+  filter: drop-shadow(0 0 5px rgba(74, 222, 128, 0.4));
 }
 
 .hero-card.secondary {
@@ -596,15 +718,27 @@ a {
 }
 
 .card {
-  border-radius: 18px;
-  padding: 1.3rem 1.2rem;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 255, 0.4);
+  border-radius: 22px;
+  padding: 1.8rem 1.6rem;
+  /* changed to radial gradient for a deeper, more interesting look */
+  background: radial-gradient(circle at top left, rgba(35, 48, 105, 0.9) 0%, rgba(15, 20, 60, 0.95) 40%, rgba(8, 10, 25, 0.98) 100%);
+  border: 2px solid rgba(127, 143, 252, 0.42);
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.85);
   position: relative;
   overflow: hidden;
+  /* Smooth transition for zoom effects */
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Performance: hint browser to optimize transform animations */
+  will-change: transform;
 }
 
+/* Colorful glow effect on hover - restored */
 .card::before {
   content: "";
   position: absolute;
@@ -625,35 +759,39 @@ a {
   transform: translate3d(-6px, -8px, 0);
 }
 
+/* Hide the generic card glow for product cards (they use their own spinning border) */
+.product-card::before {
+  display: none;
+}
+
 .card:hover {
-  transform: translateY(-3px);
-  transition: transform 0.22s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  border-color: rgba(129, 140, 248, 0.85);
-  box-shadow: 0 0 25px rgba(129, 140, 248, 0.45), 0 18px 45px rgba(15, 23, 42, 0.95);
+  /* Restored zoom effect (scale 1.05) with !important to force it */
+  transform: translateY(-10px) scale(1.05) !important;
+  border-color: rgba(129, 140, 248, 0.95);
+  box-shadow: 0 0 35px rgba(129, 140, 248, 0.4), 0 25px 65px rgba(15, 23, 42, 0.95);
+  /* Reduced brightness - darker hover for better readability */
+  background: radial-gradient(circle at top left, rgba(40, 52, 110, 0.92) 0%, rgba(18, 24, 55, 0.96) 40%, rgba(10, 14, 30, 1) 100%) !important;
+  z-index: 100;
 }
 
 @keyframes border-spin {
   0% {
-    transform: rotate(0deg);
+    transform: rotate(0deg) translateZ(0);
   }
 
   100% {
-    transform: rotate(360deg);
+    transform: rotate(360deg) translateZ(0);
   }
 }
 
+/* Base styling for ready products - will be refined by status classes */
 .product-card.ready {
   position: relative;
   overflow: hidden;
-  background: transparent !important;
-  /* Allow pseudo-elements to show */
   z-index: 1;
-  /* Establish stacking context */
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.5);
-  /* Re-apply text-friendly shadow */
 }
 
-/* The spinning neon gradient */
+/* The spinning neon gradient - fixed line artifact */
 .product-card.ready::before {
   content: "";
   position: absolute;
@@ -661,34 +799,105 @@ a {
   left: -50%;
   width: 200%;
   height: 200%;
+  /* Fixed gradient to eliminate center line */
   background: conic-gradient(transparent,
-      transparent,
-      transparent,
-      #63f5ff,
-      /* Neon Cyan */
-      #a47bff
-      /* Neon Purple */
-    );
+      rgba(99, 102, 241, 0.7),
+      rgba(34, 211, 238, 0.7),
+      rgba(168, 85, 247, 0.7),
+      transparent 60%);
   animation: border-spin 4s linear infinite;
   z-index: -2;
+  opacity: 1;
+  /* Performance: GPU acceleration for rotation */
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
-/* The inner background to masquerade as the card body */
-.product-card.ready::after {
+/* The inner background covering the spin, with its own hover */
+.product-card.ready .card-inner-bg {
   content: "";
   position: absolute;
   inset: 2px;
-  /* Border thickness */
-  background: rgba(15, 23, 42, 0.95);
-  /* Match theme dark color */
-  border-radius: 16px;
-  /* Slightly less than card border-radius: 18px */
-  z-index: -1;
+  /* Match the base card radial gradient exactly */
+  background: radial-gradient(circle at top left, rgba(35, 48, 105, 1) 0%, rgba(15, 20, 60, 1) 40%, rgba(8, 10, 25, 1) 100%);
+  border-radius: 20px;
+  z-index: 0;
+  /* Changed from -1 to 0 to be above spinning border but below content */
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Performance: optimize filter changes */
+  will-change: filter;
 }
 
-/* Optional: Slight glow interaction on hover */
+.product-card.ready:hover .card-inner-bg {
+  /* Simplified: only adjust brightness, no color change */
+  filter: brightness(1.2);
+}
+
+/* Ensure all content is above the inner background */
+.product-card-head,
+.product-card-features,
+.product-card-body,
+.product-card-footer {
+  position: relative;
+  z-index: 3;
+}
+
+/* ========== STATUS-BASED STYLING ========== */
+
+/* Ready Status - Cyan/Blue spinning border (default) */
+.product-card.status-ready::before {
+  display: block !important;
+  /* Smooth gradient without center line artifact */
+  background: conic-gradient(transparent,
+      rgba(99, 102, 241, 0.7),
+      rgba(34, 211, 238, 0.7),
+      rgba(168, 85, 247, 0.7),
+      transparent 60%);
+}
+
+/* Override featured card border for ready status */
+.product-card.featured-card.status-ready {
+  border-color: rgba(56, 189, 248, 0.8) !important;
+}
+
+/* Habis (Out of Stock) Status - Red border ONLY, no spinning */
+.product-card.status-habis {
+  border-color: rgba(239, 68, 68, 0.9) !important;
+}
+
+.product-card.status-habis::before {
+  display: none !important;
+  /* No spinning border for habis */
+}
+
+/* Override featured card styling for habis status */
+.product-card.featured-card.status-habis {
+  border-color: rgba(239, 68, 68, 0.9) !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.4), 0 18px 45px rgba(15, 23, 42, 0.9) !important;
+}
+
+.product-card.status-habis:hover {
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.4), 0 20px 60px rgba(15, 23, 42, 0.95) !important;
+}
+
+/* Pre-order cards don't have spinning border */
+.product-card.status-preorder::before {
+  display: none !important;
+}
+
+/* Hide recommendation text by default - will be shown by JS for ready status */
+.recommendation-text {
+  display: none;
+}
+
+/* Featured card styling in products section */
+.product-card.featured-card {
+  border-color: rgba(56, 189, 248, 0.8) !important;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.4), 0 18px 45px rgba(15, 23, 42, 0.9);
+}
+
 .product-card.ready:hover::before {
-  filter: blur(5px);
+  filter: blur(10px);
   opacity: 1;
 }
 
@@ -780,37 +989,71 @@ a {
   margin: 0 0 0.7rem;
   font-size: 0.86rem;
   color: #e5e7ff;
-  position: relative;
   z-index: 2;
+}
+
+.card-list i {
+  color: #63f5ff;
+  font-size: 0.95rem;
+  width: 1.2rem;
+  text-align: center;
 }
 
 .card-list li {
   display: flex;
-  align-items: flex-start;
-  gap: 0.45rem;
-  margin-bottom: 0.45rem;
-}
-
-.card-list i {
-  color: #60a5fa;
-  margin-top: 0.12rem;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+  line-height: 1.4;
 }
 
 .product-note {
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   color: #cbd5f5;
+  margin-top: 1rem;
+  line-height: 1.5;
   position: relative;
   z-index: 2;
 }
 
-.product-note.highlight {
-  padding: 0.55rem 0.75rem;
+.product-note.attention-note {
+  font-weight: 700;
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.1);
+  padding: 0.8rem 1rem;
   border-radius: 10px;
-  border: 1px dashed rgba(94, 234, 212, 0.6);
-  background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.15), transparent 55%);
-  color: #bbf7d0;
+  border-left: 4px solid #facc15;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-note.attention-note i {
+  color: #facc15;
+  font-size: 1rem;
+  filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.5));
+}
+
+.product-note.highlight {
+  padding: 0.8rem 1rem;
+  margin-top: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  background: rgba(16, 185, 129, 0.08);
+  color: #a7f3d0;
   position: relative;
   z-index: 2;
+  font-weight: 500;
+  display: block;
+  /* Changed from flex to block to fix text wrapping */
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.product-note.highlight i {
+  color: #34d399;
+  margin-right: 0.5rem;
 }
 
 /* Force text to take full width */
@@ -831,13 +1074,13 @@ a {
 /* Adjust image position to be truly in the corner (negating padding) */
 .product-card-image {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -15px;
+  right: -15px;
   /* Pull to corner */
-  width: 90px;
-  /* Reduced for mobile */
+  width: 140px;
+  /* Significantly enlarged for mobile as requested */
   height: auto;
-  max-height: 140px;
+  max-height: 180px;
   object-fit: contain;
   opacity: 0.85;
   z-index: 1;
@@ -847,7 +1090,108 @@ a {
   border-image: none;
 }
 
+/* Product Card Alignment sections */
+.product-card-head {
+  margin-bottom: 0.8rem;
+  z-index: 2;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.product-card-features {
+  margin-bottom: 0.4rem;
+  z-index: 2;
+  position: relative;
+  flex-shrink: 0;
+  /* Premium Glassmorphism for feature points */
+  background: linear-gradient(135deg, rgba(148, 163, 255, 0.1), rgba(148, 163, 255, 0.03));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 1.2rem;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 255, 0.15);
+  box-shadow: inset 0 0 25px rgba(129, 140, 248, 0.08),
+    0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.product-card-body {
+  margin-bottom: 0.4rem;
+  z-index: 2;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.product-card-footer {
+  margin-top: auto;
+  z-index: 2;
+  position: relative;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .product-card-head {
+    min-height: 145px;
+  }
+
+  .product-card-features {
+    min-height: 155px;
+  }
+
+  .product-card-body {
+    min-height: 75px;
+  }
+
+  .product-card-footer {
+    min-height: 85px;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+.product-card-features::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent);
+  transform: translateX(-100%) rotate(45deg);
+  animation: shimmer 5s infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
 /* Remove padding-right to allow text to span full width */
+
+/* Dazai Animation */
+.animated-dazai {
+  animation: float-dazai 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(164, 123, 255, 0.6));
+}
+
+@keyframes float-dazai {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(3deg);
+  }
+}
 
 @media (min-width: 640px) {
   .product-card-image {
@@ -1452,7 +1796,7 @@ a {
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4), 0 0 0 0 rgba(99, 102, 241, 0.5);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4), 0 0 0 0 rgba(99, 102, 241, 0.7);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   align-items: center;
@@ -1464,7 +1808,7 @@ a {
 
   0%,
   100% {
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4), 0 0 0 0 rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4), 0 0 0 0 rgba(99, 102, 241, 0.7);
   }
 
   50% {
@@ -1557,7 +1901,7 @@ a {
   }
 
   .nav-fab:hover {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.5) 0%, rgba(139, 92, 246, 0.5) 100%);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.7) 0%, rgba(139, 92, 246, 0.5) 100%);
   }
 
   /* Hide compass icon and menu on mobile */

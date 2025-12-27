@@ -280,62 +280,74 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ================= STOCK =================
-  const isOutOfStock = false;
-  // =========================================
-
-  // Function to update global stock appearance
-  const applyStockStatus = (isOut) => {
-    // Target badges: pills and hero chips
-    const stockBadges = document.querySelectorAll('.pill, .hero-secondary-chip');
-    const statusTexts = document.querySelectorAll('.product-status, .product-preorder-note');
-    const productCards = document.querySelectorAll('.product-card');
-
-    if (isOut) {
-      // SET TO OUT OF STOCK
-      stockBadges.forEach(badge => {
-        if (!badge.hasAttribute('data-original-text')) {
-          badge.setAttribute('data-original-text', badge.textContent.trim());
-        }
-        badge.textContent = 'Habis';
-        badge.classList.add('status-habis');
-      });
-
-      statusTexts.forEach(text => {
-        if (!text.hasAttribute('data-original-text')) {
-          text.setAttribute('data-original-text', text.innerHTML);
-        }
-        text.innerHTML = '<span style="color: #fca5a5;"><i class="fa-solid fa-circle-xmark"></i> Stok sedang tidak tersedia.</span>';
-      });
-
-      productCards.forEach(card => {
-        if (card.classList.contains('ready')) {
-          card.classList.add('status-habis');
-        }
-      });
-    } else {
-      // RESTORE TO NORMAL
-      stockBadges.forEach(badge => {
-        if (badge.hasAttribute('data-original-text')) {
-          badge.textContent = badge.getAttribute('data-original-text');
-          badge.classList.remove('status-habis');
-        }
-      });
-
-      statusTexts.forEach(text => {
-        if (text.hasAttribute('data-original-text')) {
-          text.innerHTML = text.getAttribute('data-original-text');
-        }
-      });
-
-      productCards.forEach(card => {
-        card.classList.remove('status-habis');
-      });
-    }
+  // ================= PRODUCT STATUS CONFIGURATION =================
+  // Individual product statuses: 'ready', 'preorder', or 'habis'
+  const productStatus = {
+    robux400: 'preorder',
+    robux800: 'ready',
+    robux1000: 'ready'
   };
 
-  // Run stock status update on load
-  applyStockStatus(isOutOfStock);
+  // Global override - when true, ALL products become 'habis' regardless of individual settings
+  const isOutOfStock = false;
+  // =================================================================
+
+  // Function to apply product statuses
+  const applyProductStatus = () => {
+    // Get all product cards
+    const products = [
+      { id: 'robux400', element: document.querySelector('[data-product="robux400"]') },
+      { id: 'robux800', element: document.querySelector('[data-product="robux800"]') },
+      { id: 'robux1000', element: document.querySelector('[data-product="robux1000"]') }
+    ];
+
+    products.forEach(({ id, element }) => {
+      if (!element) return;
+
+      // Determine actual status (global override takes precedence)
+      const actualStatus = isOutOfStock ? 'habis' : productStatus[id];
+
+      // Remove all status classes
+      element.classList.remove('status-ready', 'status-preorder', 'status-habis');
+
+      // Add current status class
+      element.classList.add(`status-${actualStatus}`);
+
+      // Handle recommendation text visibility (only show for 'ready' status)
+      const recommendationText = element.querySelector('.recommendation-text');
+      if (recommendationText) {
+        if (actualStatus === 'ready') {
+          recommendationText.style.display = 'block';
+        } else {
+          recommendationText.style.display = 'none';
+        }
+      }
+
+      // Update pill/badge text and styling
+      const pill = element.querySelector('.pill');
+      if (pill) {
+        pill.classList.remove('ready', 'pre-order', 'status-habis');
+
+        switch (actualStatus) {
+          case 'ready':
+            pill.textContent = 'Ready Stok';
+            pill.classList.add('ready');
+            break;
+          case 'preorder':
+            pill.textContent = 'Pre-Order';
+            pill.classList.add('pre-order');
+            break;
+          case 'habis':
+            pill.textContent = 'Habis';
+            pill.classList.add('status-habis');
+            break;
+        }
+      }
+    });
+  };
+
+  // Apply statuses on page load
+  applyProductStatus();
 
   // FAQ Accordion Logic
   const faqItems = document.querySelectorAll(".faq-item");
