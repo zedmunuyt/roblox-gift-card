@@ -376,14 +376,24 @@ document.addEventListener("DOMContentLoaded", () => {
         question.setAttribute("aria-expanded", willOpen ? "true" : "false");
 
         // Scroll to item if opening (especially useful on mobile)
+        // SMART SCROLL LOGIC
+        // Only scroll if the item is actually obscured by the navbar
         if (willOpen) {
-          // Increase delay to 300ms so it calculates after the other item has mostly collapsed
           setTimeout(() => {
-            item.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }, 300);
+            const rect = item.getBoundingClientRect();
+            // Get navbar height or default to a safe value (approx 80px + buffer)
+            const nav = document.querySelector('.navbar');
+            const navHeight = nav ? nav.offsetHeight : 80;
+
+            // Check if item top is behind or too close to navbar
+            // We use a regular check: if top position is less than navbar height + small buffer
+            if (rect.top < navHeight + 10) {
+              window.scrollBy({
+                top: rect.top - navHeight - 20, // Scroll just enough to show title with 20px buffer
+                behavior: 'smooth'
+              });
+            }
+          }, 350); // Wait for open transition (0.3s) to mostly complete
         }
       });
     }

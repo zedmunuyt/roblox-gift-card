@@ -735,7 +735,7 @@ a {
   flex-direction: column;
   height: 100%;
   /* Performance: hint browser to optimize transform animations */
-  will-change: transform;
+  /* REMOVED will-change: transform to save memory on low-end devices */
 }
 
 /* Colorful glow effect on hover - restored */
